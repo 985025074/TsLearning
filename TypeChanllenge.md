@@ -172,7 +172,7 @@ type a1 = [1,2,3]
 type a2 = readonly [1,2,3]
 let b1: a1 = [1,2,3]
 let b2: a2 = [1,2,3]
-b1.push(2) 
+b1.push(2) 可以，只是限制了类型到1 2 3
 b2.push(2) youcant
 ```
 # 好题：https://github.com/type-challenges/type-challenges/blob/main/questions/00020-medium-promise-all/README.md
@@ -209,3 +209,29 @@ type IsNever<T> = [T] extends [never] ? true : false;
 https://juejin.cn/post/7165170011282079751#heading-14
 #
 https://github.com/type-challenges/type-challenges/issues/614
+
+# 判断一个object是否是空
+extends this
+{
+  [index:string] : never
+}
+不允许又任何键值
+
+# 好题：
+https://github.com/type-challenges/type-challenges/blob/main/questions/02257-medium-minusone/README.md
+```ts
+type ReverseString<T extends string> = T extends `${infer first extends string}${infer R extends string}` ? `${ReverseString<R>}${first}`:""
+type minus1<T extends string>= T extends `${infer lastnum extends number}${infer R}`? 
+                                                                    lastnum extends 0? `9${minus1<R>}`:`${[9,0,1,2,3,4,5,6,7,8][lastnum]}${R}`:never
+type RemoveZero<T extends string> = T extends `0${infer R}` ? RemoveZero<R>:T                                                                
+
+type MinusOne<T extends number> = RemoveZero<ReverseString<minus1<ReverseString<`${T}`>>>> extends `${infer R extends number}` ?R:0
+type test = MinusOne<1>
+type minus = RemoveZero<ReverseString<minus1<ReverseString<`1`>>>>
+```
+要点：infer extends 限制推导 同上面的generic Function有异曲同工之妙  
+思考点：  
+如何操作整数？ 先转string  template literal  
+思考点2：
+如何操作退位操作？使用了一个整数array。
+
